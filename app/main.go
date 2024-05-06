@@ -37,7 +37,15 @@ func main() {
 		receivedData := string(buf[:size])
 		fmt.Printf("Received %d bytes from %s: %s\n", size, source, receivedData)
 
-		respose := &dns.Header{
+		questions := []dns.Question{
+			{
+				Name:  "codecrafters.io",
+				Type:  1,
+				Class: 1,
+			},
+		}
+
+		header := dns.Header{
 			ID:      1234,
 			QR:      1,
 			OPCODE:  0,
@@ -47,14 +55,18 @@ func main() {
 			RA:      0,
 			Z:       0,
 			RCODE:   0,
-			QDCOUNT: 0,
+			QDCOUNT: uint16(len(questions)),
 			ANCOUNT: 0,
 			NSCOUNT: 0,
 			ARCOUNT: 0,
 		}
-		response := respose.Bytes()
 
-		_, err = udpConn.WriteToUDP(response, source)
+		response := dns.Message{
+			Header:    header,
+			Questions: questions,
+		}
+
+		_, err = udpConn.WriteToUDP(response.Bytes(), source)
 		if err != nil {
 			fmt.Println("Failed to send response:", err)
 		}
