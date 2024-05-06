@@ -45,6 +45,17 @@ func main() {
 			},
 		}
 
+		answers := []dns.Answer{
+			{
+				Name:     "codecrafters.io",
+				Type:     1,
+				Class:    1,
+				TTL:      60,
+				RDLength: 4,
+				RData:    "8.8.8.8",
+			},
+		}
+
 		header := dns.Header{
 			ID:      1234,
 			QR:      1,
@@ -56,7 +67,7 @@ func main() {
 			Z:       0,
 			RCODE:   0,
 			QDCOUNT: uint16(len(questions)),
-			ANCOUNT: 0,
+			ANCOUNT: uint16(len(answers)),
 			NSCOUNT: 0,
 			ARCOUNT: 0,
 		}
@@ -64,6 +75,7 @@ func main() {
 		response := dns.Message{
 			Header:    header,
 			Questions: questions,
+			Answers:   answers,
 		}
 
 		_, err = udpConn.WriteToUDP(response.Bytes(), source)
