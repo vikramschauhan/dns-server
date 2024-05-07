@@ -56,21 +56,7 @@ func main() {
 			},
 		}
 
-		header := dns.Header{
-			ID:      1234,
-			QR:      1,
-			OPCODE:  0,
-			AA:      0,
-			TC:      0,
-			RD:      0,
-			RA:      0,
-			Z:       0,
-			RCODE:   0,
-			QDCOUNT: uint16(len(questions)),
-			ANCOUNT: uint16(len(answers)),
-			NSCOUNT: 0,
-			ARCOUNT: 0,
-		}
+		header := dns.ParseDNSHeader(buf[:size])
 
 		response := dns.Message{
 			Header:    header,

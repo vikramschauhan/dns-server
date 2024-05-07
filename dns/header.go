@@ -36,3 +36,27 @@ func (header Header) Bytes() []byte {
 	binary.BigEndian.PutUint16(buf[10:12], header.ARCOUNT)
 	return buf
 }
+
+func ParseDNSHeader(data []byte) Header {
+
+	header := Header{}
+	header.ID = binary.BigEndian.Uint16(data[0:2])
+	flag := binary.BigEndian.Uint16(data[2:4])
+	header.QR = 1
+	header.OPCODE = uint8(flag >> 11 & 0xF)
+	header.AA = 0
+	header.TC = 0
+	header.RD = uint8(flag >> 8 & 0x1)
+	header.RA = 0
+	header.Z = 0
+	rcode := uint8(0)
+	if header.OPCODE != 0 {
+		rcode = 4
+	}
+	header.RCODE = rcode
+	header.QDCOUNT = binary.BigEndian.Uint16(data[4:6])
+	header.ANCOUNT = uint16(1)
+	header.NSCOUNT = binary.BigEndian.Uint16(data[8:10])
+	header.ARCOUNT = binary.BigEndian.Uint16(data[10:12])
+	return header
+}
