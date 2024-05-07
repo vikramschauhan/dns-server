@@ -37,7 +37,7 @@ func (header Header) Bytes() []byte {
 	return buf
 }
 
-func ParseDNSHeader(data []byte) Header {
+func ParseHeader(data []byte) Header {
 
 	header := Header{}
 	header.ID = binary.BigEndian.Uint16(data[0:2])

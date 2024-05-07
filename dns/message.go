@@ -31,3 +31,17 @@ func encodeData(data string) []byte {
 	buf = append(buf, 0)
 	return buf
 }
+
+func decodeDomainName(data []byte, start int) string {
+	var domainName string
+	i := start
+	for {
+		length := int(data[i])
+		if length == 0 {
+			break
+		}
+		domainName += string(data[i+1:i+1+length]) + "."
+		i += length + 1
+	}
+	return domainName[:len(domainName)-1]
+}

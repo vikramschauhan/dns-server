@@ -18,3 +18,11 @@ func (question Question) Bytes() []byte {
 	binary.Write(&buf, binary.BigEndian, question.Class)
 	return buf.Bytes()
 }
+
+func ParseQuestion(data []byte) Question {
+	question := Question{}
+	question.Name = decodeDomainName(data, 12)
+	question.Type = uint16(1)
+	question.Class = uint16(1)
+	return question
+}

@@ -38,25 +38,14 @@ func main() {
 		fmt.Printf("Received %d bytes from %s: %s\n", size, source, receivedData)
 
 		questions := []dns.Question{
-			{
-				Name:  "codecrafters.io",
-				Type:  1,
-				Class: 1,
-			},
+			dns.ParseQuestion(buf[:size]),
 		}
 
 		answers := []dns.Answer{
-			{
-				Name:     "codecrafters.io",
-				Type:     1,
-				Class:    1,
-				TTL:      60,
-				RDLength: 4,
-				RData:    "8.8.8.8",
-			},
+			dns.ParseAnswer(buf[:size]),
 		}
 
-		header := dns.ParseDNSHeader(buf[:size])
+		header := dns.ParseHeader(buf[:size])
 
 		response := dns.Message{
 			Header:    header,
