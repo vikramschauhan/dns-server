@@ -50,12 +50,14 @@ func ParseHeader(data []byte) Header {
 	header.RA = 0
 	header.Z = 0
 	rcode := uint8(0)
-	if header.OPCODE != 0 {
+	if header.OPCODE == 0 {
+		rcode = 0
+	} else {
 		rcode = 4
 	}
 	header.RCODE = rcode
 	header.QDCOUNT = binary.BigEndian.Uint16(data[4:6])
-	header.ANCOUNT = uint16(1)
+	header.ANCOUNT = binary.BigEndian.Uint16(data[4:6])
 	header.NSCOUNT = binary.BigEndian.Uint16(data[8:10])
 	header.ARCOUNT = binary.BigEndian.Uint16(data[10:12])
 	return header

@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/codecrafters-io/dns-server-starter-go/dns"
 	"net"
+
+	"github.com/codecrafters-io/dns-server-starter-go/dns"
 )
 
 func main() {
@@ -34,25 +35,21 @@ func main() {
 			break
 		}
 
-		receivedData := string(buf[:size])
-		fmt.Printf("Received %d bytes from %s: %s\n", size, source, receivedData)
-
-		questions := []dns.Question{
-			dns.ParseQuestion(buf[:size]),
-		}
-
-		answers := []dns.Answer{
-			dns.ParseAnswer(buf[:size]),
-		}
+		//receivedData := string(buf[:size])
+		//fmt.Println("Received %d bytes from %s %s", size, source, receivedData)
 
 		header := dns.ParseHeader(buf[:size])
+		fmt.Println("Header:", header)
+		questions := dns.ParseQuestion(buf[:size])
+		fmt.Println("Questions:", questions)
+		answers := dns.ParseAnswer(buf[:size])
+		fmt.Println("Answers:", answers)
 
 		response := dns.Message{
 			Header:    header,
 			Questions: questions,
 			Answers:   answers,
 		}
-
 		_, err = udpConn.WriteToUDP(response.Bytes(), source)
 		if err != nil {
 			fmt.Println("Failed to send response:", err)

@@ -19,10 +19,15 @@ func (question Question) Bytes() []byte {
 	return buf.Bytes()
 }
 
-func ParseQuestion(data []byte) Question {
-	question := Question{}
-	question.Name = decodeDomainName(data, 12)
-	question.Type = uint16(1)
-	question.Class = uint16(1)
-	return question
+func ParseQuestion(data []byte) []Question {
+	questions := make([]Question, 0)
+	for i := 0; i < int(binary.BigEndian.Uint16(data[4:6])); i++ {
+		question := Question{
+			Name:  decodeDomainName(data, 12),
+			Type:  uint16(1),
+			Class: uint16(1),
+		}
+		questions = append(questions, question)
+	}
+	return questions
 }
